@@ -22,6 +22,9 @@ app.engine(
   engine({
     extname: ".hbs",
     defaultLayout: "layout",
+    helpers: {
+      eq: (a, b) => a === b,
+    },
   }),
 );
 
