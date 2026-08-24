@@ -39,8 +39,6 @@
                   <small class="text-secondary mb-1 fw-medium">Thu nhập</small>
                   <h1 class="m-0 text-success fw-bold">{{income}}</h1>
                 </div>
-
-                <!-- Chi tiêu -->
                 <div
                   class="bg-light rounded-4 shadow flex-shrink-0 d-flex flex-column justify-content-center align-items-center"
                   style="
@@ -57,13 +55,82 @@
                   <h1 class="m-0 text-danger fw-bold">{{expense}}</h1>
                 </div>
 
+                <div
+                {{#each userData}}
+                  class="bg-light rounded-4 shadow flex-shrink-0 d-flex flex-column justify-content-center align-items-center"
+                  style="
+        width: 280px;
+        height: 150px;
+        background-color: #e9ecef !important;
+        border: 1px solid #d6d8db;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      "
+                >
+                  <small class="text-secondary mb-1 fw-medium">Còn lại</small>
+                  <h1 class="m-0 fw-bold">{{this.balance}}</h1>
+                  {{/each}}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    <div class="container py-4">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
 
-      <!-- Mấy UI khác của mày thêm ở đây -->
+          <h4 class="mb-3">
+            Giao dịch gần đây
+          </h4>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead>
+                <tr>
+                  <th>Loại</th>
+                  <th>Danh mục</th>
+                  <th>Mô tả</th>
+                  <th>Số tiền</th>
+                  <th>Ngày</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each TransactionData}}
+                  <tr>
+                    <td>
+                      {{#if (eq this.type "income")}}
+                        <span class="badge text-bg-success">
+                          Thu nhập
+                        </span>
+                      {{else}}
+                        <span class="badge text-bg-danger">
+                          Chi tiêu
+                        </span>
+                      {{/if}}
+                    </td>
+                    <td>
+                      {{this.category}}
+                    </td>
+                    <td>
+                      {{this.description}}
+                    </td>
+                    <td class="fw-semibold">
+                      {{this.amount}}
+                      ₫
+                    </td>
+                    <td>
+                      {{this.date}}
+                    </td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
     </body>
   </body>
 </html>

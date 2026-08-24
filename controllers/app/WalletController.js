@@ -1,21 +1,39 @@
 const User = require("../../models/User");
+const helper = require("../../helper/formatters");
 const Transaction = require("../../models/Transaction");
 
 class WalletController {
   async getUserData(req, res, next) {
     try {
-      const userData = await User.find().lean();
+      //Get data
+      const userData = await User.find();
       const transactionData = await Transaction.find().lean();
 
-      userData[0].balance = userData[0].balance.toLocaleString("vi-VN");
+      //Update user balance
+      const newBalance = transactionData.reduce((sum, x) => {
+        if (x.type === "expense") {
+          sum -= x.amount;
+        } else {
+          sum += x.amount;
+        }
+
+        return sum;
+      }, 0);
+
+      userData.balance = newBalance;
+      await User.updateOne({}, { $set: { balance: newBalance } });
+
+      //Format
+      userData.balance = helper.formatMoneyToVN(userData.balance);
 
       transactionData.forEach((x) => {
-        x.amount = x.amount.toLocaleString("vi-VN");
-        x.date = new Date(x.date).toLocaleDateString("vi-VN");
+        x.amount = helper.formatMoneyToVN(x.amount);
+        x.date = helper.formatDateToVN(x.date);
       });
 
+      //Render
       res.render("home", {
-        Userdata: userData,
+        Userdata: { userData },
         TransactionData: transactionData,
       });
     } catch (err) {
@@ -23,8 +41,12 @@ class WalletController {
     }
   }
 
-  async createTransaction(req, res, next) {
+  async showTransaction(req, res, next) {
     try {
+      //Get data
+      const transactionData = await Transaction.find().lean();
+      const userData = await User.find().lean();
+
       const income = await Transaction.find({
         type: "income",
       }).lean();
@@ -33,6 +55,7 @@ class WalletController {
         type: "expense",
       }).lean();
 
+      //Sum data
       const incomeTotal = income.reduce((sum, x) => {
         return sum + x.amount;
       }, 0);
@@ -41,19 +64,25 @@ class WalletController {
         return sum + x.amount;
       }, 0);
 
-      income.forEach((x) => {
-        x.amount = x.amount.toLocaleString("vi-VN");
-      });
+      //Format
+      userData[0].balance = helper.formatMoneyToVN(userData[0].balance);
+      helper.formatDateArrayToVN(transactionData);
+      helper.formatMoneyArrayToVN(income);
+      helper.formatMoneyArrayToVN(transactionData);
 
+      //Render
       res.render("transaction/transactionShower", {
-        TransactionData: income,
-        income: incomeTotal.toLocaleString("vi-VN"),
-        expense: expenseTotal.toLocaleString("vi-VN"),
+        TransactionData: transactionData,
+        userData,
+        income: helper.formatMoneyToVN(incomeTotal),
+        expense: helper.formatMoneyToVN(expenseTotal),
       });
     } catch (err) {
       next(err);
     }
   }
+
+  async createTransaction(req, res, next) {}
 }
 
 module.exports = new WalletController();
