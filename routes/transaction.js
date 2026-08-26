@@ -3,6 +3,6 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/", WalletController.showTransaction);
-// router.get("/", WalletController.);
+router.get("/:id", WalletController.showTransactionDetail);
 
 module.exports = router;

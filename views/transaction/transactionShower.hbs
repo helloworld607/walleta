@@ -16,17 +16,16 @@
     ></script>
   </head>
   <body>
-    <body>
-      <div class="container pt-4">
-        <div class="row">
-          <div class="col-md-4">
-            <div class="container pt-4">
-              <div class="d-flex gap-3">
+    <div class="container pt-4">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="container pt-4">
+            <div class="d-flex gap-3">
 
-                <!-- Thu nhập -->
-                <div
-                  class="bg-light rounded-4 shadow flex-shrink-0 d-flex flex-column justify-content-center align-items-center"
-                  style="
+              <!-- Thu nhập -->
+              <div
+                class="bg-light rounded-4 shadow flex-shrink-0 d-flex flex-column justify-content-center align-items-center"
+                style="
         width: 280px;
         height: 150px;
         background-color: #e9ecef !important;
@@ -35,13 +34,13 @@
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
       "
-                >
-                  <small class="text-secondary mb-1 fw-medium">Thu nhập</small>
-                  <h1 class="m-0 text-success fw-bold">{{income}}</h1>
-                </div>
-                <div
-                  class="bg-light rounded-4 shadow flex-shrink-0 d-flex flex-column justify-content-center align-items-center"
-                  style="
+              >
+                <small class="text-secondary mb-1 fw-medium">Thu nhập</small>
+                <h1 class="m-0 text-success fw-bold">{{income}}</h1>
+              </div>
+              <div
+                class="bg-light rounded-4 shadow flex-shrink-0 d-flex flex-column justify-content-center align-items-center"
+                style="
         width: 280px;
         height: 150px;
         background-color: #e9ecef !important;
@@ -50,13 +49,13 @@
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
       "
-                >
-                  <small class="text-secondary mb-1 fw-medium">Chi tiêu</small>
-                  <h1 class="m-0 text-danger fw-bold">{{expense}}</h1>
-                </div>
+              >
+                <small class="text-secondary mb-1 fw-medium">Chi tiêu</small>
+                <h1 class="m-0 text-danger fw-bold">{{expense}}</h1>
+              </div>
 
+              {{#each userData}}
                 <div
-                {{#each userData}}
                   class="bg-light rounded-4 shadow flex-shrink-0 d-flex flex-column justify-content-center align-items-center"
                   style="
         width: 280px;
@@ -70,20 +69,18 @@
                 >
                   <small class="text-secondary mb-1 fw-medium">Còn lại</small>
                   <h1 class="m-0 fw-bold">{{this.balance}}</h1>
-                  {{/each}}
                 </div>
-              </div>
+              {{/each}}
             </div>
           </div>
         </div>
       </div>
+    </div>
     <div class="container py-4">
       <div class="card shadow-sm border-0">
         <div class="card-body">
 
-          <h4 class="mb-3">
-            Giao dịch gần đây
-          </h4>
+          <h4 class="mb-3">Giao dịch gần đây</h4>
           <div class="table-responsive">
             <table class="table table-hover align-middle">
               <thead>
@@ -97,7 +94,11 @@
               </thead>
               <tbody>
                 {{#each TransactionData}}
-                  <tr>
+                  <tr
+                    class="transaction-row"
+                    onclick="window.location.href='/transactions/{{this._id}}'"
+                    style="cursor: pointer;"
+                  >
                     <td>
                       {{#if (eq this.type "income")}}
                         <span class="badge text-bg-success">
@@ -130,7 +131,5 @@
         </div>
       </div>
     </div>
-    </div>
-    </body>
   </body>
 </html>

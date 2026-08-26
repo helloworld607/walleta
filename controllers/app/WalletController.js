@@ -82,6 +82,23 @@ class WalletController {
     }
   }
 
+  async showTransactionDetail(req, res, next) {
+    try {
+      const transaction = await Transaction.findById(req.params.id).lean();
+
+      if (!transaction) {
+        return res.status(404).send("Không tìm thấy giao dịch.");
+      }
+
+      transaction.amount = helper.formatMoneyToVN(transaction.amount);
+      transaction.date = helper.formatDateToVN(transaction.date);
+
+      return res.render("transaction/transactionDetail", { transaction });
+    } catch (err) {
+      return next(err);
+    }
+  }
+
   async createTransaction(req, res, next) {}
 }
 

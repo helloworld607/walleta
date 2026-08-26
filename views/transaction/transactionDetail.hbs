@@ -1,0 +1,35 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Chi tiết giao dịch</h2>
+    <a class="btn btn-outline-secondary" href="/transactions">Quay lại</a>
+  </div>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+      <div class="mb-4">
+        {{#if (eq transaction.type "income")}}
+          <span class="badge badge-success">Thu nhập</span>
+        {{else}}
+          <span class="badge badge-danger">Chi tiêu</span>
+        {{/if}}
+      </div>
+
+      <dl class="row mb-0">
+        <dt class="col-sm-4">Danh mục</dt>
+        <dd class="col-sm-8">{{transaction.category}}</dd>
+
+        <dt class="col-sm-4">Mô tả</dt>
+        <dd class="col-sm-8">{{transaction.description}}</dd>
+
+        <dt class="col-sm-4">Số tiền</dt>
+        <dd class="col-sm-8 font-weight-bold">{{transaction.amount}} ₫</dd>
+
+        <dt class="col-sm-4">Ngày giao dịch</dt>
+        <dd class="col-sm-8">{{transaction.date}}</dd>
+      </dl>
+
+      <button type="button" class="btn btn-success">Sửa</button>
+      <button type="button" class="btn btn-danger">Xóa</button>
+    </div>
+  </div>
+</div>
