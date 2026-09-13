@@ -99,7 +99,81 @@ class WalletController {
     }
   }
 
-  async createTransaction(req, res, next) {}
+  async editTransaction(req, res, next) {
+    try {
+      const transaction = await Transaction.findById(req.params.id).lean();
+
+      const transactionTime = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Asia/Bangkok",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      }).format(transaction.date);
+      const transactionDate = new Intl.DateTimeFormat("vi-VN", {
+        timeZone: "Asia/Bangkok",
+        day: "numeric",
+        month: "numeric",
+        year: "numeric",
+      }).format(transaction.date);
+
+      res.render("transaction/editTransaction", {
+        transaction,
+        transactionDate,
+        transactionTime,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async edit(req, res, next) {
+    try {
+      const { d, date, time, ...data } = req.body;
+      const id = req.params.id;
+
+      const [day, month, year] = date.split("/");
+      const [hour, minute, second] = time.split(":");
+
+      data.date = new Date(year, month - 1, day, hour, minute, second);
+
+      await Transaction.findByIdAndUpdate(id, data);
+
+      res.redirect("/transaction/" + id);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async addTransaction(req, res, next) {
+    try {
+      const userData = await User.find();
+      const now = new Date();
+      console.log(userData);
+
+      const date = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
+
+      const time =
+        `${String(now.getHours()).padStart(2, "0")}:` +
+        `${String(now.getMinutes()).padStart(2, "0")}:` +
+        `${String(now.getSeconds()).padStart(2, "0")}`;
+
+      res.render("transaction/addTransaction", { date, time, userData });
+    } catch (err) {}
+  }
+
+  async createTransaction(req, res, next) {
+    console.log(req.body);
+    const time = req.body.time.split(":");
+    const date = req.body.date.split("/");
+
+    const [hour, minute, second] = time;
+    const [day, month, year] = date;
+
+    req.body.date = new Date(year, month - 1, day, hour, minute, second);
+
+    await Transaction.create(req.body);
+  }
 }
 
 module.exports = new WalletController();

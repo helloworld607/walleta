@@ -1,7 +1,7 @@
 <div class="container py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0">Chi tiết giao dịch</h2>
-    <a class="btn btn-outline-secondary" href="/transactions">Quay lại</a>
+    <a class="btn btn-outline-secondary" href="/transaction">Quay lại</a>
   </div>
 
   <div class="card shadow-sm border-0">
@@ -28,7 +28,11 @@
         <dd class="col-sm-8">{{transaction.date}}</dd>
       </dl>
 
-      <button type="button" class="btn btn-success">Sửa</button>
+      <a
+        type="button"
+        class="btn btn-success"
+        href="/transaction/edit/{{transaction._id}}"
+      >Sửa</a>
       <button type="button" class="btn btn-danger">Xóa</button>
     </div>
   </div>

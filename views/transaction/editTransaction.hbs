@@ -1,0 +1,181 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Sửa giao dịch</h2>
+    <a class="btn btn-outline-secondary" href="/transaction">Quay lại</a>
+  </div>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+      <form
+        action="/transaction/edit/{{transaction._id}}?_method=PUT"
+        method="POST"
+      >
+        <div class="form-group">
+          <label for="type">Loại giao dịch</label>
+          <div class="transaction-type-toggle">
+            {{#if (eq transaction.type "income")}}
+              <input
+                id="income"
+                name="type"
+                type="radio"
+                value="income"
+                checked
+              />
+            {{else}}
+              <input id="income" name="type" type="radio" value="income" />
+            {{/if}}
+            <label for="income">Thu nhập</label>
+
+            {{#if (eq transaction.type "expense")}}
+              <input
+                id="expense"
+                name="type"
+                type="radio"
+                value="expense"
+                checked
+              />
+            {{else}}
+              <input id="expense" name="type" type="radio" value="expense" />
+            {{/if}}
+            <label for="expense">Chi tiêu</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="category">Danh mục</label>
+          <input
+            class="form-control minimal-input"
+            id="category"
+            name="category"
+            type="text"
+            value="{{transaction.category}}"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Mô tả</label>
+          <textarea
+            class="form-control minimal-textarea"
+            id="description"
+            name="description"
+            rows="3"
+          >{{transaction.description}}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="amount">Số tiền</label>
+          <input
+            class="form-control minimal-input"
+            id="amount"
+            name="amount"
+            type="number"
+            value="{{transaction.amount}}"
+            min="0"
+            required
+          />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="time">Giờ giao dịch</label>
+            <input
+              class="form-control minimal-input"
+              id="time"
+              name="time"
+              type="time"
+              step="1"
+              value="{{transactionTime}}"
+              required
+            />
+          </div>
+
+          <div class="form-group col-md-8">
+            <label for="date">Ngày giao dịch</label>
+            <input
+              class="form-control minimal-input"
+              id="date"
+              name="date"
+              type="text"
+              value="{{transactionDate}}"
+              placeholder="20/8/2026"
+              pattern="[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}"
+              title="Nhập theo dạng D/M/YYYY, ví dụ 20/8/2026"
+              required
+            />
+          </div>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Lưu thay đổi</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  .transaction-type-toggle {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    width: fit-content;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 999px;
+    background: rgba(248, 249, 250, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .transaction-type-toggle input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .transaction-type-toggle label {
+    margin: 0;
+    padding: 0.55rem 1rem;
+    border-radius: 999px;
+    background: #e9ecef;
+    color: #6c757d;
+    cursor: pointer;
+    font-weight: 600;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .transaction-type-toggle #income:checked + label {
+    background: #198754;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.25);
+  }
+
+  .transaction-type-toggle #expense:checked + label {
+    background: #dc3545;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.25);
+  }
+
+  .minimal-input,
+  .minimal-textarea {
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    background: transparent;
+    box-shadow: none;
+    line-height: 1.5;
+  }
+
+  .minimal-textarea {
+    min-height: 110px;
+    resize: vertical;
+  }
+
+  input.minimal-input.form-control:focus,
+  textarea.minimal-textarea.form-control:focus {
+    border-color: #6c757d;
+    box-shadow: 0 0 0 0.15rem rgba(108, 117, 125, 0.18);
+    outline: 0;
+  }
+</style>

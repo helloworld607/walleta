@@ -3,7 +3,7 @@ const transactionRouter = require("./transaction");
 
 function router(app) {
   app.use("/", userRouter);
-  app.use("/transactions", transactionRouter);
+  app.use("/transaction", transactionRouter);
 }
 
 module.exports = router;
