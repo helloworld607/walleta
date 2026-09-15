@@ -2,6 +2,20 @@ const User = require("../../models/User");
 const helper = require("../../helper/formatters");
 const Transaction = require("../../models/Transaction");
 
+function balanceCalculator(data) {
+  const newBalance = data.reduce((sum, x) => {
+    if (x.type === "expense") {
+      sum -= x.amount;
+    } else {
+      sum += x.amount;
+    }
+
+    return sum;
+  }, 0);
+
+  return newBalance;
+}
+
 class WalletController {
   async getUserData(req, res, next) {
     try {
@@ -10,15 +24,7 @@ class WalletController {
       const transactionData = await Transaction.find().lean();
 
       //Update user balance
-      const newBalance = transactionData.reduce((sum, x) => {
-        if (x.type === "expense") {
-          sum -= x.amount;
-        } else {
-          sum += x.amount;
-        }
-
-        return sum;
-      }, 0);
+      let newBalance = balanceCalculator(transactionData);
 
       userData.balance = newBalance;
       await User.updateOne({}, { $set: { balance: newBalance } });
@@ -47,6 +53,13 @@ class WalletController {
       const transactionData = await Transaction.find().lean();
       const userData = await User.find().lean();
 
+      //Update user data
+      let newBalance = balanceCalculator(transactionData);
+
+      userData[0].balance = newBalance;
+      await User.updateOne({}, { $set: { balance: newBalance } });
+
+      //Get income and expense
       const income = await Transaction.find({
         type: "income",
       }).lean();
@@ -139,7 +152,7 @@ class WalletController {
 
       await Transaction.findByIdAndUpdate(id, data);
 
-      res.redirect("/transaction/" + id);
+      res.redirect("/transaction");
     } catch (err) {
       next(err);
     }
@@ -147,7 +160,7 @@ class WalletController {
 
   async addTransaction(req, res, next) {
     try {
-      const userData = await User.find();
+      const userData = await User.find().lean();
       const now = new Date();
       console.log(userData);
 
@@ -159,20 +172,35 @@ class WalletController {
         `${String(now.getSeconds()).padStart(2, "0")}`;
 
       res.render("transaction/addTransaction", { date, time, userData });
-    } catch (err) {}
+    } catch (err) {
+      next(err);
+    }
   }
 
   async createTransaction(req, res, next) {
-    console.log(req.body);
-    const time = req.body.time.split(":");
-    const date = req.body.date.split("/");
+    try {
+      const time = req.body.time.split(":");
+      const date = req.body.date.split("/");
 
-    const [hour, minute, second] = time;
-    const [day, month, year] = date;
+      const [hour, minute, second] = time;
+      const [day, month, year] = date;
 
-    req.body.date = new Date(year, month - 1, day, hour, minute, second);
+      req.body.date = new Date(year, month - 1, day, hour, minute, second);
 
-    await Transaction.create(req.body);
+      await Transaction.create(req.body);
+      res.redirect("/transaction");
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async deleteTransaction(req, res, next) {
+    try {
+      await Transaction.findByIdAndDelete(req.params.id);
+      res.redirect("/transaction");
+    } catch (err) {
+      next(err);
+    }
   }
 }
 
