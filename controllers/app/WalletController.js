@@ -1,6 +1,13 @@
 const User = require("../../models/User");
 const helper = require("../../helper/formatters");
 const Transaction = require("../../models/Transaction");
+//1. method-override phải có trong package.json.
+// 2. GET /delete/:id → đổi sang DELETE.
+// 3. Không update/create bằng nguyên req.body.
+// 4. Check transaction tồn tại trong editTransaction().
+// 5. Thêm error-handling middleware.
+// 6. Sau này auth thì bỏ hidden user và lấy user từ session/auth.
+// 7. Khi project lớn hơn mới tính services/.
 
 function balanceCalculator(data) {
   const newBalance = data.reduce((sum, x) => {
@@ -162,7 +169,6 @@ class WalletController {
     try {
       const userData = await User.find().lean();
       const now = new Date();
-      console.log(userData);
 
       const date = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
 
