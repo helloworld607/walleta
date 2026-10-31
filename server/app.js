@@ -40,7 +40,4 @@ app.set("view engine", "hbs");
 app.set("views", "../views");
 app.set("views", path.join(__dirname, "../views"));
 
-//Listen
-app.listen(port, () => {
-  console.log(`Port: ${port}`);
-});
+module.exports = app;
